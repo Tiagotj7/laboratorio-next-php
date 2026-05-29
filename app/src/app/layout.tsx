@@ -7,10 +7,14 @@ export const metadata = {
   description: "CRUD com Login e Estoque (Next + PHP)",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="pt-BR">
-      <body>
+      <body className="bg-slate-50">
         <SiteHeader />
         {children}
         <Toaster richColors />
