@@ -1,40 +1,62 @@
 <?php
-namespace App\Controllers;
+require __DIR__ . "/../vendor/autoload.php";
 
-use App\Models\Product;
-use function App\Utils\json;
+use App\Controllers\AuthController;
+use App\Controllers\ProductController;
+use App\Middleware\Auth;
+use App\Utils\Response;
 
-class ProductController {
-  public static function index() { json(["data" => Product::all()]); }
+// CORS (dev)
+header("Access-Control-Allow-Origin: http://localhost:3000");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") exit;
 
-  public static function store() {
-    $body = json_decode(file_get_contents('php://input'), true) ?? [];
-    if (!($body['name'] ?? '')) json(["error" => "name required"], 422);
+$method = $_SERVER["REQUEST_METHOD"];
+$path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 
-    $id = Product::create([
-      "name" => $body["name"],
-      "sku" => $body["sku"] ?? null,
-      "quantity" => $body["quantity"] ?? 0,
-      "price" => $body["price"] ?? 0
-    ]);
-    json(["id" => $id], 201);
+function body(): array {
+  $raw = file_get_contents("php://input");
+  $data = json_decode($raw, true);
+  return is_array($data) ? $data : [];
+}
+
+// Rotas
+try {
+  // Health
+  if ($method === "GET" && $path === "/") {
+    Response::json(["ok" => true, "service" => "laboratorio-api"]);
   }
 
-  public static function update(int $id) {
-    $body = json_decode(file_get_contents('php://input'), true) ?? [];
-    if (!($body['name'] ?? '')) json(["error" => "name required"], 422);
-
-    Product::update($id, [
-      "name" => $body["name"],
-      "sku" => $body["sku"] ?? null,
-      "quantity" => $body["quantity"] ?? 0,
-      "price" => $body["price"] ?? 0
-    ]);
-    json(["ok" => true]);
+  // Auth
+  if ($method === "POST" && $path === "/auth/register") AuthController::register(body());
+  if ($method === "POST" && $path === "/auth/login") AuthController::login(body());
+  if ($method === "GET"  && $path === "/auth/me") {
+    $payload = Auth::requireAuth();
+    AuthController::me($payload);
   }
 
-  public static function destroy(int $id) {
-    Product::delete($id);
-    json(["ok" => true]);
+  // Products (protegido)
+  if ($path === "/products" && $method === "GET") {
+    Auth::requireAuth();
+    ProductController::index();
   }
+  if ($path === "/products" && $method === "POST") {
+    Auth::requireAuth();
+    ProductController::store(body());
+  }
+
+  if (preg_match("#^/products/(\d+)$#", $path, $m)) {
+    Auth::requireAuth();
+    $id = (int)$m[1];
+
+    if ($method === "GET") ProductController::show($id);
+    if ($method === "PUT") ProductController::update($id, body());
+    if ($method === "DELETE") ProductController::destroy($id);
+  }
+
+  Response::json(["error" => "Rota não encontrada"], 404);
+
+} catch (Throwable $e) {
+  Response::json(["error" => "Erro interno", "details" => $e->getMessage()], 500);
 }
