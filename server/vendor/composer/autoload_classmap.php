@@ -8,6 +8,11 @@ $baseDir = dirname($vendorDir);
 return array(
     'App\\Config\\DB' => $baseDir . '/src/Config/DB.php',
     'App\\Config\\JWTConfig' => $baseDir . '/src/Config/JWTConfig.php',
+    'App\\Controllers\\AuthController' => $baseDir . '/src/Controllers/AuthController.php',
+    'App\\Controllers\\ProductController' => $baseDir . '/src/Controllers/ProductController.php',
+    'App\\Middleware\\Auth' => $baseDir . '/src/Middleware/Auth.php',
+    'App\\Models\\Product' => $baseDir . '/src/Models/Product.php',
+    'App\\Models\\User' => $baseDir . '/src/Models/User.php',
     'App\\Utils\\Response' => $baseDir . '/src/Utils/Response.php',
     'Attribute' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',

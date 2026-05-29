@@ -79,6 +79,11 @@ class ComposerStaticInit96a7df23d7f5488c5d2406d623ff2bd6
     public static $classMap = array (
         'App\\Config\\DB' => __DIR__ . '/../..' . '/src/Config/DB.php',
         'App\\Config\\JWTConfig' => __DIR__ . '/../..' . '/src/Config/JWTConfig.php',
+        'App\\Controllers\\AuthController' => __DIR__ . '/../..' . '/src/Controllers/AuthController.php',
+        'App\\Controllers\\ProductController' => __DIR__ . '/../..' . '/src/Controllers/ProductController.php',
+        'App\\Middleware\\Auth' => __DIR__ . '/../..' . '/src/Middleware/Auth.php',
+        'App\\Models\\Product' => __DIR__ . '/../..' . '/src/Models/Product.php',
+        'App\\Models\\User' => __DIR__ . '/../..' . '/src/Models/User.php',
         'App\\Utils\\Response' => __DIR__ . '/../..' . '/src/Utils/Response.php',
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',

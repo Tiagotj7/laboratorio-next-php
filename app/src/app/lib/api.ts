@@ -1,5 +1,3 @@
-const API_URL = "http://localhost:8000";
-
 export function getToken() {
   if (typeof window === "undefined") return null;
   return localStorage.getItem("token");
@@ -20,13 +18,12 @@ export async function api(path: string, options: RequestInit = {}) {
   };
   if (token) headers.Authorization = `Bearer ${token}`;
 
-  const res = await fetch(`${API_URL}${path}`, { ...options, headers });
+  const res = await fetch(`/api${path}`, { ...options, headers });
+
   const text = await res.text();
   let data: any = {};
   try { data = text ? JSON.parse(text) : {}; } catch {}
 
-  if (!res.ok) {
-    throw new Error(data?.error || `Erro HTTP ${res.status}`);
-  }
+  if (!res.ok) throw new Error(data?.error || `Erro HTTP ${res.status}`);
   return data;
 }
