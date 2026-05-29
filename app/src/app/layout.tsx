@@ -1,22 +1,20 @@
-import type { Metadata } from "next";
 import "./globals.css";
+import SiteHeader from "./components/SiteHeader";
+import { Toaster } from "@/components/ui/sonner";
 
-export const metadata: Metadata = {
-  title: "LAB: NEXT & PHP",
-  description: "Um simples projeto para testar o Next.js com backend em PHP.",
+export const metadata = {
+  title: "Laboratório - Estoque",
+  description: "CRUD com Login e Estoque (Next + PHP)",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="PT-BR"
-      className={`h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="pt-BR">
+      <body>
+        <SiteHeader />
+        {children}
+        <Toaster richColors />
+      </body>
     </html>
   );
 }
